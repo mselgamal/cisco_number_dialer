@@ -1,1 +1,27 @@
-this is a git repo
+Automated number testing tool
+
+Purpose: verify if a list of numbers are working and can reach destination PBX.
+
+Pre-testing:
+  - Create any type of cisco phone for testing and configure phone with correct dialing privileges and settings.
+  - Create a end user in cucm with following privileges
+      - Standard CTI Allow Control of Phones supporting Connected Xfer and conf
+      - Standard CTI Allow Control of All Devices
+      - Standard CTI Enabled
+  - Add phone device to "Controlled Devices"
+  - The numbers used for testing should be configured on the PBX
+    and ideally pointing to voicemail, but not required. When the numbers are routed to voicemail, runtime improves significantly.
+  - If total numbers ported are 100 or less, prepare a csv file that lists every number getting ported. Otherwise prepare a file with 100 numbers to test. The numbers should be listed as 91+10-digits and whether its internal or external. i.e “912487878187,external” or “913053412733,internal”
+	- The Script will take approx. 16 secs per number worst case.
+  
+Testing steps:
+	- prompt user for api admin and user
+	- prompt for calling number
+	- prompt user for a list of numbers, enter file you prepared "pre-testing"
+	- for each number in the list
+		- call the number
+		- wait until session is established or call fails to establish session
+		- wait 1 sec
+		- disconnect and continue to next number
+    - if the call failed add to failed calls list
+	- print any failed calls
