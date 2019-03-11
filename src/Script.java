@@ -220,10 +220,13 @@ public class Script {
 			this.call.connect(this.terminal, this.address, calledNum);
 			
 			this.callStatus.waitForEstablished();
-			Thread.sleep((long)(DELAY*1000l));
 			
-			if (this.callStatus.isCallEstablished() || this.callStatus.isCallTimedout())
+			if (this.callStatus.isCallEstablished()) {
+				Thread.sleep((long)(DELAY*1000l));
 				this.call.drop();
+			} else if (this.callStatus.isCallTimedout()) {
+				this.call.drop();
+			}
 			
 			this.callStatus.waitForDisconnected();
 			
