@@ -4,7 +4,7 @@ Requirements: JTAPI, Java 1.8 or Java 1.7.0.79, Cisco Call Manager 11.x
 
 Tested with: Cisco Call Manager 11.5.1.15900-18
 
-Purpose: verify if a list of numbers are working and can reach destination PBX.
+Purpose: verify direct inward dialed numbers are working and reach destination PBX.
 
 Pre-testing:
   - Create any type of cisco phone for testing and configure phone with correct dialing privileges and settings.
