@@ -13,8 +13,8 @@ Pre-testing:
       - Standard CTI Allow Control of All Devices
       - Standard CTI Enabled
   - Add phone device to "Controlled Devices"
-  - The numbers used for testing should be configured on the PBX
-    and ideally pointing to voicemail, but not required. When the numbers are routed to voicemail, runtime improves significantly.
+  - The numbers used for testing should be pointing to voicemail/Auto Attendant/Auto Answer Phone, but not required. 
+  When the numbers are routed to voicemail/AA, runtime improves significantly.
   - If total numbers ported are 100 or less, prepare a csv file that lists every number getting ported. 
   Otherwise prepare a file with 100 numbers to test. The numbers should be listed as 91+10-digits and whether its internal or 
   external. i.e “912487878187,external” or “913053412733,internal”
@@ -29,5 +29,9 @@ Testing steps:
 		- wait until session is established or call timedout or call failure
 		- wait 1 sec
 		- disconnect and continue to next number
-    - if the call failed add to failed calls list
-	- print any failed calls
+                - if the call failed add to failed calls list
+    - print any failed calls
+
+Static settings:
+    - Each established call will wait 1 second
+    - A call timesout after 15 seconds for internal calls and 10 seconds for external calls
