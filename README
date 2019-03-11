@@ -26,7 +26,7 @@ Testing steps:
 	- prompt user for a list of numbers, enter file you prepared "pre-testing"
 	- for each number in the list
 		- call the number
-		- wait until session is established or call fails to establish session
+		- wait until session is established or call timedout or call failure
 		- wait 1 sec
 		- disconnect and continue to next number
     - if the call failed add to failed calls list
