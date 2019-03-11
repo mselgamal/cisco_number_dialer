@@ -42,6 +42,7 @@ public class Script {
 			+ " (/src/etc/etc/num.txt or C:\\user\\melgamal\\etc\\etc\num.txt : ";
 	private MyAddressObserver addressObserver;
 	private MyCallObserver callObserver;
+	private MyProviderObserver providerObserver;
 	private AddrStatus addrStatus;
 	private ProvStatus provStatus;
 	private CallStatus callStatus;
@@ -124,12 +125,11 @@ public class Script {
 	
 	private void exit() {
 		sc.close();
-		if (this.provider != null)
-			this.provider.shutdown();
-		if (this.addrStatus != null)
-			this.addrStatus.waitForOOS();
-		if (this.provStatus != null)
+		if (this.provider != null) {
+			this.provider.removeObserver(this.provider.getObservers()[0]);
 			this.provStatus.waitForOOS();
+			this.provider.shutdown();
+		} 
 		System.out.println("## Terminating Helper Threads... ##");
 		for (int i = 0; i < this.threads.size() ;i++) {
 			try {
@@ -151,11 +151,11 @@ public class Script {
 	ResourceUnavailableException, MethodNotSupportedException {
 		String url = data.getHost() + ";"+"login=" + data.getUsername() + ";passwd=" + data.getPasswd();
 		JtapiPeer peer = JtapiPeerFactory.getJtapiPeer(null);
-		System.out.println("## JTAPI Peer Initialzed ##");
+		System.out.println("\n## JTAPI Peer Initialzed ##");
 		this.provider = peer.getProvider(url);
 		System.out.println("## Provider Initialzed ##");
-		MyProviderObserver providerObserver = new MyProviderObserver(this.provStatus);
-		this.provider.addObserver(providerObserver);
+		this.providerObserver = new MyProviderObserver(this.provStatus);
+		this.provider.addObserver(this.providerObserver);
 		this.provStatus.waitForInService();
 	}
 	
@@ -304,18 +304,22 @@ public class Script {
 	 * initiate test objects
 	 * start testing
 	 */
-	public void start() throws JtapiPeerUnavailableException, ResourceUnavailableException, 
-	MethodNotSupportedException, IOException, InvalidArgumentException, InterruptedException {
+	public void start() {
 		askForUsername();
 		askForPasswd();
 		askForHost();
 		askForCallingNum();
 		collectCalledNums(data.calledNumbers, promptForFilename());
 		
-		initTestObjects();
-		this.address = (CiscoAddress) this.provider.getAddress(this.data.getCallingNum());
-		this.startTesting(this.data.calledNumbers);
-		
-		this.exit();
+		try {
+			initTestObjects();
+			this.address = (CiscoAddress) this.provider.getAddress(this.data.getCallingNum());
+			this.startTesting(this.data.calledNumbers);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			this.exit();
+			System.exit(0);
+		}
 	}
 }

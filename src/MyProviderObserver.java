@@ -27,6 +27,7 @@ public class MyProviderObserver implements ProviderObserver{
 				this.status.inService();
 			} else if (event instanceof ProvShutdownEv) {
 				System.out.println("## Provider SHUTDOWN ##");
+				this.status.shutdown();
 			} else {
 				System.out.println("## Provider OUT_OF_SERVICE ##");
 				this.status.outOfService();

@@ -29,7 +29,6 @@ public class Status {
 				e.printStackTrace();
 			}
 		}
-		this.notifyAll();
 	}
 	
 	public synchronized void waitForOOS() {
@@ -40,6 +39,5 @@ public class Status {
 				e.printStackTrace();
 			}
 		}
-		this.notifyAll();
 	}
 }
