@@ -1,5 +1,9 @@
 Automated number testing tool
 
+Requirements: JTAPI, Java 1.8 or Java 1.7.0.79, Cisco Call Manager 11.x
+
+Tested with: Cisco Call Manager 11.5.1.15900-18
+
 Purpose: verify if a list of numbers are working and can reach destination PBX.
 
 Pre-testing:
