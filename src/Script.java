@@ -1,6 +1,7 @@
 package cisco_number_dialer.src;
 
 import java.io.BufferedReader;
+import java.io.Console;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -9,10 +10,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Queue;
-import java.util.Scanner;
 
 import javax.telephony.InvalidArgumentException;
-import javax.telephony.JtapiPeer;
 import javax.telephony.JtapiPeerFactory;
 import javax.telephony.JtapiPeerUnavailableException;
 import javax.telephony.MethodNotSupportedException;
@@ -22,6 +21,7 @@ import javax.telephony.Terminal;
 
 import com.cisco.jtapi.CallImpl;
 import com.cisco.jtapi.extensions.CiscoAddress;
+import com.cisco.jtapi.extensions.CiscoJtapiPeer;
 
 /**
  * this class executes the logic and initiates
@@ -33,7 +33,7 @@ import com.cisco.jtapi.extensions.CiscoAddress;
 
 public class Script {
 	protected ScriptData data;
-	private Scanner sc;
+	private Console sc;
 	private static String promptForUsername = "Enter api Username: ";
 	private static String promptForPasswd =  "Enter api Passwd: ";
 	private static String promptForHost = "Enter Host: ";
@@ -57,7 +57,7 @@ public class Script {
 	
 	public Script() {
 		data = new ScriptData();
-		sc = new Scanner(System.in);
+		sc = System.console();
 		this.addrStatus = new AddrStatus();
 		this.provStatus = new ProvStatus();
 		this.threads = new ArrayList<Thread>();
@@ -70,40 +70,36 @@ public class Script {
 	}
 	
 	private void askForUsername() {
-		System.out.print(Script.promptForUsername);
-		String username = sc.nextLine();
+		String username = sc.readLine(Script.promptForUsername);
 		if (!validInput(username))
 			askForUsername();
 		this.data.setUsername(username);
 	}
 	
 	private void askForHost() {
-		System.out.print(Script.promptForHost);
-		String host = sc.nextLine();
+		String host = sc.readLine(Script.promptForHost);
 		if (!validInput(host))
 			askForHost();
 		this.data.setHost(host);
 	}
 	
 	private void askForPasswd() {
-		System.out.print(Script.promptForPasswd);
-		String passwd = sc.nextLine();
+		char[] passwdList = sc.readPassword(Script.promptForPasswd);
+		String passwd = String.valueOf(passwdList);
 		if (!validInput(passwd))
 			askForPasswd();
 		data.setPasswd(passwd);
 	}
 	
 	private void askForCallingNum() {
-		System.out.print(Script.promptForCalledNum);
-		String num = sc.nextLine();
+		String num = sc.readLine(Script.promptForCalledNum);
 		if (!validInput(num))
 			askForCallingNum();
 		this.data.setCallingNum(num);
 	}
 	
 	private File promptForFilename() {
-		System.out.print(Script.promptForNumFile);
-		String filename = sc.nextLine();
+		String filename = sc.readLine(Script.promptForNumFile);
 		File file = new File(filename);
 		if (file.exists())
 			return file;
@@ -124,7 +120,6 @@ public class Script {
 	}
 	
 	private void exit() {
-		sc.close();
 		if (this.provider != null) {
 			this.provider.removeObserver(this.provider.getObservers()[0]);
 			this.provStatus.waitForOOS();
@@ -150,7 +145,7 @@ public class Script {
 	private void initTestObjects() throws JtapiPeerUnavailableException, 
 	ResourceUnavailableException, MethodNotSupportedException {
 		String url = data.getHost() + ";"+"login=" + data.getUsername() + ";passwd=" + data.getPasswd();
-		JtapiPeer peer = JtapiPeerFactory.getJtapiPeer(null);
+		CiscoJtapiPeer peer = (CiscoJtapiPeer) JtapiPeerFactory.getJtapiPeer(null);
 		System.out.println("\n## JTAPI Peer Initialzed ##");
 		this.provider = peer.getProvider(url);
 		System.out.println("## Provider Initialzed ##");
