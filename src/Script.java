@@ -119,12 +119,15 @@ public class Script {
 		}	
 	}
 	
-	private void exit() {
+	private void shutDownProvider() {
 		if (this.provider != null) {
 			this.provider.removeObserver(this.provider.getObservers()[0]);
 			this.provStatus.waitForOOS();
 			this.provider.shutdown();
 		} 
+	}
+	
+	private void cleanupThreads() {
 		System.out.println("## Terminating Helper Threads... ##");
 		for (int i = 0; i < this.threads.size() ;i++) {
 			try {
@@ -133,6 +136,7 @@ public class Script {
 				e.printStackTrace();
 			}
 		}
+		this.threads.clear();
 	}
 	
 	private void reset() {
@@ -173,9 +177,9 @@ public class Script {
 			}
 		}
 		if (this.terminal == null) {
-			System.out.println("Error: The calling number "+this.address.getName()+
-					" has restricted or unregistered terminals, terminating");
-			this.exit();
+			throw new IllegalArgumentException("Error: The calling number "+
+					this.address.getName()+" has restricted or unregistered terminals, "
+							+ "terminating");
 		} else {
 			System.out.println("\n## Phone Used For testing --> " + this.terminal+" ##");
 		}
@@ -313,8 +317,9 @@ public class Script {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			this.exit();
-			System.exit(0);
+			this.cleanupThreads();
 		}
+		this.shutDownProvider();
+		System.exit(0);
 	}
 }
