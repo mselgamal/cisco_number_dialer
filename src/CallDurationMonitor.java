@@ -20,6 +20,8 @@ public class CallDurationMonitor implements Runnable {
 		this.status = status;
 		if (type.equals("external"))
 			maxDuration = 11d;
+		else if(type.equals("media"))
+			maxDuration = 120d;
 	}
 	@Override
 	public void run() {

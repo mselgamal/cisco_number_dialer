@@ -33,6 +33,9 @@ import com.cisco.jtapi.extensions.CiscoJtapiPeer;
 
 public class Script {
 	protected ScriptData data;
+	private static final long DELAY = 1500;
+	private static final long MEDIA_DELAY = 60000l;
+	private static final long EST_DELAY = 1000l;
 	private Console sc;
 	private static String promptForUsername = "Enter api Username: ";
 	private static String promptForPasswd =  "Enter api Passwd: ";
@@ -53,7 +56,6 @@ public class Script {
 	private static HashMap<String,String> failedDst = new HashMap<String,String>();
 	private CallDurationMonitor callDuration;
 	private List<Thread> threads;
-	private int DELAY = 1500;
 	
 	public Script() {
 		data = new ScriptData();
@@ -203,7 +205,7 @@ public class Script {
 	 * print call duration
 	 */
 	private void makeCall(String calledNum, String type) {
-		long DELAY = 1l;
+		long delay = type.equals("media") ? MEDIA_DELAY : EST_DELAY;
 		Thread durationMonThread = null;
 		try {
 			System.out.println("--------------------------------");
@@ -221,7 +223,7 @@ public class Script {
 			this.callStatus.waitForEstablished();
 
 			if (this.callStatus.isCallEstablished()) {
-				Thread.sleep((DELAY*1000l));
+				Thread.sleep(delay);
 				this.call.drop();
 			} else if (this.callStatus.isCallTimedout()) {
 				this.call.drop();
@@ -230,7 +232,7 @@ public class Script {
 			this.callStatus.waitForDisconnected();
 			
 			System.out.println("## Call Duration in secs (approx): " + String.format("%.2f", 
-					(this.callDuration.duration + DELAY)) + " ##");
+					(this.callDuration.duration)) + " ##");
 			
 			if (this.callStatus.isCallTimedout()) {
 				failedDst.put(calledNum, "Call Timedout.. duration -> " + 
@@ -283,7 +285,7 @@ public class Script {
 				makeCall(line[0],line[1]);
 			else
 				makeCall(line[0],"internal");
-			Thread.sleep(this.DELAY);
+			Thread.sleep(DELAY);
 		}
 		end = System.currentTimeMillis();
 		duration = (((double)end - (double)start) / 1000d);
