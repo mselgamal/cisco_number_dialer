@@ -14,13 +14,11 @@ public class CallDurationMonitor implements Runnable {
 	protected double duration;
 	private long startTime;
 	private long endTime;
-	private double maxDuration = 18d;
+	private double maxDuration = 21d;
 	
 	public CallDurationMonitor(CallStatus status, String type) {
 		this.status = status;
-		if (type.equals("internal"))
-			maxDuration = 18d;
-		else
+		if (type.equals("external"))
 			maxDuration = 11d;
 	}
 	@Override

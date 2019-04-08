@@ -181,7 +181,7 @@ public class Script {
 					this.address.getName()+" has restricted or unregistered terminals, "
 							+ "terminating");
 		} else {
-			System.out.println("\n## Phone Used For testing --> " + this.terminal+" ##");
+			System.out.println("\n## Device Used For testing --> " + this.terminal+" ##");
 		}
 	}
 	
@@ -203,7 +203,7 @@ public class Script {
 	 * print call duration
 	 */
 	private void makeCall(String calledNum, String type) {
-		double DELAY = 1.000d;
+		long DELAY = 1l;
 		Thread durationMonThread = null;
 		try {
 			System.out.println("--------------------------------");
@@ -219,9 +219,9 @@ public class Script {
 			this.call.connect(this.terminal, this.address, calledNum);
 			
 			this.callStatus.waitForEstablished();
-			
+
 			if (this.callStatus.isCallEstablished()) {
-				Thread.sleep((long)(DELAY*1000l));
+				Thread.sleep((DELAY*1000l));
 				this.call.drop();
 			} else if (this.callStatus.isCallTimedout()) {
 				this.call.drop();

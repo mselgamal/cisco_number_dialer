@@ -45,6 +45,13 @@ public class MyCallObserver implements CallControlCallObserver{
 				case CallCtlConnFailedEv.ID:
 					System.out.println("Call Failed");
 					this.status.callFailed();
+					if (!this.status.isCallAlerted() && !this.status.isCallReached()) {
+						try {
+							event.getCall().getConnections()[0].disconnect();
+						} catch (Exception e) {
+							e.printStackTrace();
+						} 
+					}
 					break;
 				case CallCtlConnUnknownEv.ID:
 					System.out.println("Call Status Unkown");
