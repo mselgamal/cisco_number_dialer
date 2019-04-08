@@ -1,5 +1,6 @@
 package cisco_number_dialer.src;
 
+import javax.telephony.Connection;
 import javax.telephony.callcontrol.CallControlCallObserver;
 import javax.telephony.callcontrol.events.CallCtlConnAlertingEv;
 import javax.telephony.callcontrol.events.CallCtlConnDialingEv;
@@ -45,13 +46,15 @@ public class MyCallObserver implements CallControlCallObserver{
 				case CallCtlConnFailedEv.ID:
 					System.out.println("Call Failed");
 					this.status.callFailed();
-					if (!this.status.isCallAlerted() && !this.status.isCallReached()) {
-						try {
+					//if (!this.status.isCallAlerted() && !this.status.isCallReached()) {
+					try {
+						int state = event.getCall().getConnections()[0].getState();
+						if (state != Connection.DISCONNECTED)
 							event.getCall().getConnections()[0].disconnect();
-						} catch (Exception e) {
-							e.printStackTrace();
-						} 
-					}
+					} catch (Exception e) {
+						e.printStackTrace();
+					} 
+					//}
 					break;
 				case CallCtlConnUnknownEv.ID:
 					System.out.println("Call Status Unkown");
