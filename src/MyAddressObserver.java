@@ -29,14 +29,14 @@ public class MyAddressObserver implements AddressObserver{
 			if (event instanceof CiscoAddrEv) {
 				CiscoAddrEv ciscoAddrEv = (CiscoAddrEv) event;
 				if (ciscoAddrEv instanceof CiscoAddrInServiceEv) {
-					System.out.println("## Address IN_SERVICE ##");
+					//System.out.println("## Address IN_SERVICE ##");
 					this.status.inService();
 				} else if (ciscoAddrEv instanceof CiscoAddrOutOfServiceEv) {
-					System.out.println("## Address OUT_OF_SERVICE ##");
+					//System.out.println("## Address OUT_OF_SERVICE ##");
 					this.status.outOfService();
 				}
 			} else if (event instanceof AddrObservationEndedEv) {
-				System.out.println("Address observation ended");
+				//System.out.println("Address observation ended");
 				this.status.outOfService();
 			} else {
 				System.out.println("Warning: Unkown Address Event recieved.. "+event+" terminating");

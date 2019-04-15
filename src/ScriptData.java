@@ -1,7 +1,7 @@
 package cisco_number_dialer.src;
 
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * this class acts as a container for relevant 
@@ -12,14 +12,29 @@ import java.util.Queue;
  */
 
 public class ScriptData {
+	public int threadCount;
+	public int trueThreadCount;
+	public final int MAX_CC = 45;
+	public final int MIN_CC = 1;
 	private String username;
 	private String passwd;
 	private String host;
 	private String callingNum;
-	protected Queue<String> calledNumbers;
+	protected List<String> calledNumbers;
+	protected List<String> callingNumbers;
 	
 	public ScriptData() {
-		this.calledNumbers = new LinkedList<String>();
+		this.calledNumbers = new ArrayList<String>();
+		this.callingNumbers = new ArrayList<String>();
+	}
+	
+	public void setCallingNums(int start) {
+		trueThreadCount = threadCount <= this.calledNumbers.size() 
+				? threadCount : this.calledNumbers.size(); 
+		for (int i = 0; i < trueThreadCount; i++) {
+			this.callingNumbers.add(String.valueOf(start));
+			start++;
+		}
 	}
 	
 	public String getUsername() {
