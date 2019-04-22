@@ -14,7 +14,7 @@ public class CallDurationMonitor implements Runnable {
 	protected double duration;
 	private long startTime;
 	private long endTime;
-	private double maxDuration = 21d;
+	private double maxDuration = 25d;
 	
 	public CallDurationMonitor(CallStatus status, String type) {
 		this.status = status;
