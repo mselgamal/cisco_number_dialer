@@ -1,11 +1,11 @@
 package cisco_number_dialer.src;
 
 import java.io.BufferedReader;
+import java.io.Console;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
-import java.util.Scanner;
 
 import javax.telephony.InvalidArgumentException;
 import javax.telephony.InvalidStateException;
@@ -25,7 +25,7 @@ import javax.telephony.ResourceUnavailableException;
 public class Script {
 	private final int START_EXT = 3809002;
 	protected ScriptData data;
-	private Scanner sc;
+	private Console sc;
 	private static String promptThreadCount = "Enter # of Threads(1-45): ";
 	private static String promptForUsername = "Enter api Username: ";
 	private static String promptForPasswd =  "Enter api Passwd: ";
@@ -35,7 +35,7 @@ public class Script {
 
 	public Script() {
 		this.data = new ScriptData();
-		this.sc = new Scanner(System.in);
+		this.sc = System.console();
 	}
 	
 	private boolean validInput(String input) {
@@ -44,35 +44,30 @@ public class Script {
 		return true;
 	}
 	
-	private String readLine(String prompt) {
-		System.out.print(prompt);
-		return sc.nextLine();
-	}
-	
 	private void askForUsername() {
-		String username = readLine(Script.promptForUsername);
+		String username = sc.readLine(Script.promptForUsername);
 		if (!validInput(username))
 			askForUsername();
 		this.data.setUsername(username);
 	}
 	
 	private void askForHost() {
-		String host = readLine(Script.promptForHost);
+		String host = sc.readLine(Script.promptForHost);
 		if (!validInput(host))
 			askForHost();
 		this.data.setHost(host);
 	}
 	
 	private void askForPasswd() {
-		String passwd = readLine(Script.promptForPasswd);
-		//String passwd = String.valueOf(passwdList);
+		char[] passwdList = sc.readPassword(Script.promptForPasswd);
+		String passwd = String.valueOf(passwdList);
 		if (!validInput(passwd))
 			askForPasswd();
 		data.setPasswd(passwd);
 	}
 	
 	private void askForThreadCount() {
-		String num = readLine(Script.promptThreadCount);
+		String num = sc.readLine(Script.promptThreadCount);
 		try {
 			this.data.threadCount = Integer.parseInt(num);
 			if (!(this.data.threadCount >= this.data.MIN_CC 
@@ -86,7 +81,7 @@ public class Script {
 	}
 	
 	private File promptForFilename() {
-		String filename = readLine(Script.promptForNumFile);
+		String filename = sc.readLine(Script.promptForNumFile);
 		File file = new File(filename);
 		if (file.exists())
 			return file;
