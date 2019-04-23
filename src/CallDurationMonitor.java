@@ -30,7 +30,10 @@ public class CallDurationMonitor implements Runnable {
 			this.endTime = System.currentTimeMillis();
 			this.duration = (((double)this.endTime) - ((double)this.startTime)) / 1000.000d;
 			if (Double.compare(this.duration, this.maxDuration) > 0) {
-				this.status.callTimedout();
+				if (!this.status.isCallDelivered()) 
+					this.status.callTimedout();
+				else
+					this.status.callNetworkDelivered();
 				break;
 			}	
 		}
