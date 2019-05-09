@@ -18,7 +18,7 @@ import com.cisco.jtapi.extensions.CiscoJtapiPeer;
 
 public class SupportObjects {
 	protected static final long MEDIA_DELAY = 60000l;
-	protected static final long EST_DELAY = 1000l;
+	protected static final long EST_DELAY = 1500l;
 	protected ProvStatus provStatus;
 	protected MyProviderObserver providerObserver;
 	protected Provider provider;

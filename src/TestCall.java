@@ -116,7 +116,8 @@ public class TestCall implements Runnable {
 			if (this.callStatus.isCallTimedout()) {
 				SupportObjects.failedDst.put(calledNum, "Call Timedout.. duration -> " + 
 			this.callDuration.duration +" secs, test manual");
-			} else if (!this.callStatus.isCallSuccess()) {
+			} else if (!this.callStatus.isCallSuccess() 
+					&& !this.callStatus.isCallEstablished()) {
 				SupportObjects.failedDst.put(calledNum, "Call Failed unkown cause, test manual");
 			}
 			this.settings.helperThreads.add(durationMonThread);
