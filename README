@@ -37,11 +37,13 @@ external. i.e “912487878187,external” or “913053412733,internal”
 
 ## Deployment
 
-download jar file under
+download jar file under multi_threaded_ver branch
+
+cisco-number-dialerMT.jar
 
 ## Built With
 
-* [Java](http://www.nodejs.com)
+* [Java](https://www.oracle.com/java/)
 
 ## Versioning
 
