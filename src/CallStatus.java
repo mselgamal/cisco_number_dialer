@@ -13,6 +13,7 @@ public class CallStatus extends Status{
 	private boolean initiated = false;
 	private boolean dialed = false;
 	private boolean alerted = false;
+	private boolean networkDelivered = false;
 	private boolean offered = false;
 	private boolean reached = false;
 	private boolean established = false;
@@ -28,7 +29,7 @@ public class CallStatus extends Status{
 	
 	public boolean isCallSuccess() {
 		return this.initiated && this.dialed && this.reached
-				&& this.alerted && this.established && this.disconnected
+				&& this.alerted && this.disconnected
 				&& !this.failed && !this.dropped && !this.timeout;
 	}
 	
@@ -52,8 +53,18 @@ public class CallStatus extends Status{
 		return this.reached;
 	}
 	
+	public boolean isCallDelivered() {
+		return this.reached && this.alerted 
+				&& !this.failed && !this.disconnected && !this.unkown;
+	}
+	
 	public boolean isCallTimedout() {
 		return this.timeout;
+	}
+	
+	public synchronized void callNetworkDelivered() {
+		this.networkDelivered = true;
+		this.notifyAll();
 	}
 	
 	public synchronized void callTimedout() {
@@ -123,7 +134,7 @@ public class CallStatus extends Status{
 	}
 	
 	public synchronized void waitForEstablished() {
-		while (this.isCallActive() && !this.established) {
+		while (this.isCallActive() && (!this.established || !this.networkDelivered)) {
 			try {
 				this.wait();
 			} catch (InterruptedException e) {

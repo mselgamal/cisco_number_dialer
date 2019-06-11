@@ -28,6 +28,11 @@ import javax.telephony.events.ConnEv;
 public class MyCallObserver implements CallControlCallObserver{
 	
 	private CallStatus status;
+	private StringBuffer log;
+	
+	public MyCallObserver(StringBuffer log) {
+		this.log = log;
+	}
 	
 	public void setCallStatus(CallStatus status) {
 		this.status = status;
@@ -44,56 +49,57 @@ public class MyCallObserver implements CallControlCallObserver{
 		if (event instanceof ConnEv) {
 			switch(event.getID()) {
 				case CallCtlConnFailedEv.ID:
-					System.out.println("Call Failed");
+					log.append("Call Failed\n");
 					this.status.callFailed();
 					try {
 						int state = event.getCall().getConnections()[0].getState();
 						if (state != Connection.DISCONNECTED)
 							event.getCall().getConnections()[0].disconnect();
 					} catch (Exception e) {
-						e.printStackTrace();
+						SupportObjects.failedDst.put(event.getCall().getConnections()[0].
+								toString(), e.getLocalizedMessage());
 					}
 					break;
 				case CallCtlConnUnknownEv.ID:
-					System.out.println("Call Status Unkown");
+					log.append("Call Status Unkown\n");
 					this.status.callUnkown();
 					break;
 				case CallCtlConnOfferedEv.ID:
-					System.out.println("Call is offered");
+					log.append("Call is offered\n");
 					this.status.callOffered();
 					break;
 				case CallCtlTermConnDroppedEv.ID:
-					System.out.println("Call Dropped");
+					log.append("Call Dropped\n");
 					this.status.callDropped();
 					break;
 				case CallCtlConnInitiatedEv.ID:
-					System.out.println("Call Initiated to destination");
+					log.append("Call Initiated to destination\n");
 					this.status.inService();
 					this.status.callInitiated();
 					break;
 				case CallCtlConnDialingEv.ID:
-					System.out.println("Dialing Destination");
+					log.append("Dialing Destination\n");
 					this.status.callDialed();
 					break;
 				case CallCtlConnAlertingEv.ID:
 				case CallCtlConnNetworkAlertingEv.ID:
-					System.out.println("Alerted Destination");
+					log.append("Alerted Destination\n");
 					this.status.callAlerted();
 					break;
 				case CallCtlConnNetworkReachedEv.ID:
-					System.out.println("Reached Destination");
+					log.append("Reached Destination\n");
 					this.status.callReached();
 					break;
 				case CallCtlConnEstablishedEv.ID:
 					if (this.status.isCallAlerted() && this.status.isCallReached()) {
-						System.out.println("Call Established");
+						log.append("Call Established\n");
 						this.status.callEstablished();
 					} else {
-						System.out.println("Call Establishing");
+						log.append("Call Establishing\n");
 					}
 					break;
 				case CallCtlConnDisconnectedEv.ID:
-					System.out.println("Call Disconnected");
+					log.append("Call Disconnected\n");
 					this.status.callDisconnected();
 					break;
 			}
