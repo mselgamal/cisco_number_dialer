@@ -1,7 +1,7 @@
 package cisco_number_dialer.src;
 
 /**
- * this is a class that calculates the running
+ * This class calculates the running
  * time of a call
  * 
  * @author Mamdouh Elgamal
@@ -16,6 +16,12 @@ public class CallDurationMonitor implements Runnable {
 	private long endTime;
 	private double maxDuration = 25d;
 	
+	/**
+	 * Specify max call duration based on call type
+	 * 
+	 * @param status
+	 * @param type
+	 */
 	public CallDurationMonitor(CallStatus status, String type) {
 		this.status = status;
 		if (type.equals("external"))
@@ -23,6 +29,12 @@ public class CallDurationMonitor implements Runnable {
 		else if(type.equals("media"))
 			maxDuration = 120d;
 	}
+	
+	/**
+	 * while call is active, calculate call duration
+	 * terminate call when duration >= max duration
+	 * 
+	 */
 	@Override
 	public void run() {
 		this.startTime = System.currentTimeMillis();

@@ -1,7 +1,7 @@
 package cisco_number_dialer.src;
 
 /**
- * This class that notifies threads when a 
+ * This class notifies threads when a 
  * Cisco address receives an event
  * 
  * @author Mamdouh Elgamal

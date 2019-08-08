@@ -24,6 +24,18 @@ public class CallQueuer {
 	private int counter;
 	private HashMap<String,Integer> testCallPos;
 	
+	/**
+	 * Queue max number of allowed calls (based on thread count)
+	 * start each thread handling a call
+	 * 
+	 * @param data
+	 * @throws InvalidArgumentException
+	 * @throws ResourceUnavailableException
+	 * @throws MethodNotSupportedException
+	 * @throws JtapiPeerUnavailableException
+	 * @throws InvalidStateException
+	 * @throws PrivilegeViolationException
+	 */
 	protected CallQueuer(ScriptData data) throws InvalidArgumentException, 
 	ResourceUnavailableException, MethodNotSupportedException, JtapiPeerUnavailableException, 
 	InvalidStateException, PrivilegeViolationException {
@@ -70,6 +82,13 @@ public class CallQueuer {
 		return result;
 	}
 	
+	/**
+	 * Queue next available test call and start thread handler
+	 * This method is called when a spot is available in the queue
+	 * otherwise wait till all calls are processed then terminate
+	 * 
+	 * @throws InterruptedException
+	 */
 	protected synchronized void proccessCalls() throws InterruptedException {
 		while (!this.calledNumbers.isEmpty()) {
 			if (!this.queue.isEmpty()) {
@@ -102,6 +121,13 @@ public class CallQueuer {
 		}
 	}
 	
+	/**
+	 * adds a call to the queue and notify all threads 
+	 * waiting for an open slot in queue
+	 * reduce remaining calls remaining
+	 * 
+	 * @param testCall
+	 */
 	protected synchronized void addToQueue(TestCall testCall) {
 		this.queue.add(testCall);
 		this.counter--;
