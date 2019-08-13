@@ -89,25 +89,40 @@ public class TestCall implements Runnable {
 			log.append("--------------------------------\n");
 			log.append("Attempting to call "+this.calledNum+"\n");
 			
+			// create call status object for managing call events
 			this.callStatus = new CallStatus();
 			this.callObserver.setCallStatus(this.callStatus);
+			
+			// create call object to initiate a connection
 			this.call = (CallImpl) this.settings.provider.createCall();
 			this.callDuration = new CallDurationMonitor(this.callStatus,type);
-			durationMonThread = new Thread(this.callDuration);
 			
+			// create call duration object to monitor call duration
+			durationMonThread = new Thread(this.callDuration);
 			durationMonThread.start();
+			
+			// start call and wait for initial connection
 			this.call.connect(this.terminal, this.address, 
 					this.calledNum);
 			
+			// wait for call establishment, exit "wait"
+			// if call fails or timesout, check waitForEstablished() method
+			// for details
 			this.callStatus.waitForEstablished();
-
+			
+			// wait additional delay ms if call is indeed established
 			if (this.callStatus.isCallEstablished()) {
 				Thread.sleep(delay);
-				this.call.drop();
-			} else if (this.callStatus.isCallTimedout()) {
+			}
+			
+			// drop call connection if a timeout occurs 
+			// or call not disconnected
+			if (this.callStatus.isCallTimedout() 
+					|| !this.callStatus.isDisconnected()) {
 				this.call.drop();
 			}
 			
+			// wait for call disconnect event
 			this.callStatus.waitForDisconnected();
 			
 			log.append("## Call Duration in secs (approx): " + String.format("%.2f", 

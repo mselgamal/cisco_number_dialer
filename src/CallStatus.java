@@ -1,8 +1,10 @@
 package cisco_number_dialer.src;
 
 /**
- * this class notifies threads
- * of different connection stages in a call
+ * CallStatus Object responsible 
+ * for saving call events and
+ * notifiying threads waiting on 
+ * events to occur
  * 
  * @author Mamdouh Elgamal
  *
@@ -62,6 +64,11 @@ public class CallStatus extends Status{
 		return this.timeout;
 	}
 	
+	private boolean isCallInProgress() {
+		return !this.failed && !this.dropped && !this.unkown
+				&& !this.timeout && !this.disconnected;
+	}
+	
 	public synchronized void callNetworkDelivered() {
 		this.networkDelivered = true;
 		this.notifyAll();
@@ -118,13 +125,8 @@ public class CallStatus extends Status{
 		this.notifyAll();
 	}
 	
-	private boolean isCallActive() {
-		return !this.failed && !this.dropped && !this.unkown
-				&& !this.timeout && !this.disconnected;
-	}
-	
 	public synchronized void waitForOffered() {
-		while (this.isCallActive() && !this.offered) {
+		while (this.isCallInProgress() && !this.offered) {
 			try {
 				this.wait();
 			} catch (InterruptedException e) {
@@ -133,8 +135,16 @@ public class CallStatus extends Status{
 		}
 	}
 	
+	/**
+	 * Method caller will wait untill a call is considered
+	 * established. A call is established if:
+	 * - no longer in progress
+	 * - call is connected, i.e two-way audio
+	 * - network delivered the call, but no answer
+	 */
 	public synchronized void waitForEstablished() {
-		while (this.isCallActive() && (!this.established || !this.networkDelivered)) {
+		while (this.isCallInProgress() && 
+				(!this.established || !this.networkDelivered)) {
 			try {
 				this.wait();
 			} catch (InterruptedException e) {
